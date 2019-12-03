@@ -1,0 +1,13 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<h1>Welcome, {{user.username}}</h1>
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-danger alert-dismissible {% if message.tags %}alert-{{ message.tags }}" {% endif %}>
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

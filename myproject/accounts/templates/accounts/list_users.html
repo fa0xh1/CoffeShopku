@@ -1,0 +1,65 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title text-center">Users list</h3>
+                        <a class="btn btn-success float-right" href="{% url 'add_user' %}">Add New
+                            <i class="fas fa-user-plus fa-fw"></i></a>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Date Joined</th>
+                                    <th>Option</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in object_list %}
+                                <tr>
+                                    <td>{{row.username}}</td>
+                                    <td>{{row.email}}</td>
+                                    <td>{{row.date_joined}}</td>
+                                    <td>
+                                        <a href="{% url 'update_user' row.id %}" class="btn btn-warning"
+                                            id='{{row.id}}'><i class="fa fa-edit"></i> Edit</a>
+                                        <a href="{% url 'delete_user' row.id %}" class="btn btn-danger"
+                                            id='{{row.id}}'><i class="fa fa-trash"></i> Delete</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+    </div>
+</section>
+        {% endblock %}
+
+        {% block javascript %}
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var table = $('#example2').DataTable({
+                    lengthChange: false,
+                    buttons: ['copy', 'excel', 'pdf', 'colvis']
+                });
+
+                table.buttons().container()
+                    .appendTo('#example_wrapper .col-md-6:eq(0)');
+            });
+        </script>
+        {% endblock javascript %}

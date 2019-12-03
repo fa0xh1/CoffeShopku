@@ -1,0 +1,148 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block css %}
+<style lang="css">
+    .widget-user-header {
+        background-size: cover;
+        height: 250px !important;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center bottom;
+    }
+
+    .widget-user-username {
+        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    }
+    .widget-user-desc {
+        text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    }
+    .widget-user .card-footer {
+        padding: 0;
+    }
+</style>
+{% endblock css %}
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="card card-widget widget-user">
+                <!-- Add the bg color to the header using any of the bg-* classes -->
+                <div class="widget-user-header text-white" style="background-image: url({% static 'img/coffee-bar.jpg' %});">
+                    <h3 class="widget-user-username">{{request.user}}</h3>
+                    <h5 class="widget-user-desc">{{ request.user.first_name|add:' '|add:request.user.last_name}}</h5>
+                </div>
+                <div class="widget-user-image">
+                    <img class="img-circle" id="profile_img" src="{% get_media_prefix %}{{request.user.avatar}}" alt="User Avatar">
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link" href="#activity" data-toggle="tab">Activity</a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link active show" href="#settings"
+                                    data-toggle="tab">Settings</a></li>
+                        </ul>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <!-- Activity Tab -->
+                            <div class="tab-pane" id="activity">
+                                <h3 class="text-center">Display User Activity</h3>
+                            </div>
+                            <!-- Setting Tab -->
+                            <div class="tab-pane active show" id="settings">
+                                {% if form.errors %}
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <div class="alert alert-danger">
+                                                <strong>{{ error|escape }}</strong>
+                                            </div>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                <form class="form-horizontal" enctype="multipart/form-data" method="POST">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="first_name" class="col-sm-2 control-label">First Name</label>
+                                        <div class="col-sm-12">
+                                            <input type="text" class="form-control" id="first_name" value="{{ user.first_name }}" name="first_name" placeholder="Enter first name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="last_name" class="col-sm-2 control-label">Last Name</label>
+                                        <div class="col-sm-12">
+                                            <input type="text" class="form-control" id="last_name" value="{{ user.last_name }}" name="last_name" placeholder="Enter last name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="username" class="col-sm-2 control-label">Username</label>
+                                        <div class="col-sm-12">
+                                            <input type="text" class="form-control" id="username" value="{{ user.username }}" name="username" placeholder="Enter username">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email" class="col-sm-2 control-label">Email</label>
+                                        <div class="col-sm-12">
+                                            <input type="email" class="form-control" id="email" value="{{ user.email }}" name="email" placeholder="Enter email">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="avatar" class="col-sm-2 control-label">Profile Photo</label>
+                                        <div class="col-sm-12">
+                                            <input type="file" name="avatar" onchange="upload_img(this);" class="form-input">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password1" class="col-sm-2 control-label">Password (Optional)</label>
+                                        <div class="col-sm-12">
+                                            <input type="password" class="form-control" id="password1" name="password1" placeholder="Password">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password" class="col-sm-2 control-label">Retype password</label>
+                                        <div class="col-sm-12">
+                                            <input type="password" class="form-control" id="password2" name="password2" placeholder="Password">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-12">
+                                            <button type="submit"
+                                                class="btn btn-success">Update</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.tab-pane -->
+                        </div>
+                        <!-- /.tab-content -->
+                    </div><!-- /.card-body -->
+                </div>
+                <!-- /.nav-tabs-custom -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascript %}
+  <script>
+      function upload_img(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#profile_img').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+  </script>
+{% endblock javascript %}

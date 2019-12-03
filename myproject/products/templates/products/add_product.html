@@ -1,0 +1,138 @@
+{% extends "layouts/base.html" %}
+{% block css %}
+  <style>
+  #img_id {
+     width: 100px;
+     height: 100px;
+     background-position: 50% 50%;
+     background-repeat: no-repeat;
+     background-size: cover;
+     position:relative;
+  }
+  .custom-file {
+    margin-bottom: 10px;
+    }
+ </style>
+{% endblock css %}
+{% block content %}
+<section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-center with-border">
+                            <h3 class="card-title">{{card_title}}</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="">Product Code</label>
+                                    <input type="text" name="code" value="{{ request.POST.code}}" maxlength="10" required class="form-control ">
+                                    {% if form.errors %}
+                                        <div class="text-danger">
+                                            <strong>{{ form.code.errors}}</strong>
+                                        </div>
+                                    {% endif%}
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Product Name</label>
+                                    <input type="text" name="name" value="{{ request.POST.name }}" required class="form-control ">
+                                    {% if form.errors %}
+                                        <div class="text-danger">
+                                            <strong>{{ form.name.errors}}</strong>
+                                        </div>
+                                    {% endif%}
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Description</label>
+                                    <textarea name="description" id="description" cols="5" rows="5"
+                                        class="form-control ">{{ request.POST.description}}</textarea>
+                                        {% if form.errors %}
+                                            <div class="text-danger">
+                                                <strong>{{ form.description.errors}}</strong>
+                                            </div>
+                                        {% endif%}
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Stock</label>
+                                    <input type="number" name="stock" value="{{ request.POST.stock}}" required class="form-control ">
+                                    {% if form.errors %}
+                                        <div class="text-danger">
+                                            <strong>{{ form.stock.errors}}</strong>
+                                        </div>
+                                    {% endif%}
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Price</label>
+                                    <input type="number" name="price" value="{{ request.POST.price}}" required class="form-control ">
+                                    {% if form.errors %}
+                                        <div class="text-danger">
+                                            <strong>{{ form.price.errors}}</strong>
+                                        </div>
+                                    {% endif%}
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Categories</label>
+                                    <select name="categories" id="categories" required class="form-control ">
+                                        <option value="">Pilih</option>
+                                        {% for row in list_categories %}
+                                            <option value="{{row.id}}" {%if  request.POST.categories == row.id %} selected {% endif%}>{{row.name}}</option>
+                                        {%endfor%}
+                                        
+                                    </select>
+                                    {% if form.errors %}
+                                        <div class="text-danger">
+                                            <strong>{{ form.categories.errors}}</strong>
+                                        </div>
+                                    {% endif%}
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Photo</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" name="photo" id="photo" onchange="upload_img(this);">
+                                        <label class="custom-file-label" for="photo">Choose file</label>
+                                    </div>
+                                    <img id="img_id" src="#" alt="your image" />
+                                    {% if form.errors %}
+                                        <div class="text-danger">
+                                            <strong>{{ form.photo.errors}}</strong>
+                                        </div>
+                                    {% endif%}
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary">
+                                        <i class="far fa-paper-plane"></i></i> Save
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+{% endblock content %}
+{% block javascript %}
+<script type="text/javascript">
+
+    $("input[id='photo']").change(function (e) {
+        var $this = $(this);
+        $this.next().html($this.val().split('\\').pop());
+    });
+
+    function upload_img(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#img_id').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+</script>
+{% endblock javascript %}
+    

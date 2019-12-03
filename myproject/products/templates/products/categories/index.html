@@ -1,0 +1,180 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Tambah</h3>
+                    </div>
+                    <div class="card-body">
+                        {{hasil}}
+                        <form role="form" method="POST">
+                                {% csrf_token %}
+                                {% if form.errors %}
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <div class="alert alert-danger">
+                                                <strong>{{ error|escape }}</strong>
+                                            </div>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            
+                            <div class="form-group">
+                                <label for="name">Categories</label>
+                                <input type="text" name="name" class="form-control " id="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea name="description" id="description" cols="5" rows="5"
+                                    class="form-control "></textarea>
+                            </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary">Simpan</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">List Kategori</h3>
+                    </div>
+                    <div class="card-body">
+                            {% if messages %}
+                                {% for message in messages %}
+                                <div class="alert alert-success alert-dismissible {% if message.tags %}alert-{{ message.tags }}" {% endif %}>
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                        {{ message }}   
+                                        {% endfor %}
+                                </div>
+                            {% endif %}                         
+                        <div class="table-responsive">
+                            <table id="myTable" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <td>#</td>
+                                        <td>Kategori</td>
+                                        <td>Deskripsi</td>
+                                        <td>Aksi</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in data_categories%}
+                                    <tr>
+                                        <td>{{row.id}}</td>
+                                        <td>{{row.name}}</td>
+                                        <td>{{row.description}}</td>
+                                        <td>
+                                            <a href="#myModal{{row.id}}" data-toggle="modal" title="Edit" class="btn btn-warning"
+                                                id='{{row.id}}'><i class="fa fa-edit"></i> Edit</a>
+                                            <a href="{% url 'delete_categories' row.id %}" class="btn btn-danger"
+                                                id='{{row.id}}'><i class="fa fa-trash"></i> Delete</a>
+                                            <a href="javascript:void(0)" class="btn btn-danger" onclick="remove('{{row.id}}')"
+                                            id='{{row.id}}'><i class="fa fa-trash"></i> Delete</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% for row in data_categories %}
+        <div class="modal fade" id="myModal{{row.id}}" data-backdrop="static" data-keyboard="false" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title  w-100" id="modal_title">Edit Categories</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" enctype="multipart/form-data" method="post">
+                            {% csrf_token %}
+                            {% if form.errors %}
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            <input type="hidden" name="_method" value="put">
+                            <input type="hidden" name="id_categories" value="{{row.id}}">
+                            <div class="form-group">
+                                <label for="name"><span class="glyphicon glyphicon-pencil"></span> Categories </label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{row.name}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="description"><span class="glyphicon glyphicon-file"></span> Description</label>
+                                <textarea name="description" id="description" cols="5" rows="5"
+                                class="form-control ">{{row.description}}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-block"><span
+                                    class="glyphicon glyphicon-ok"></span>OKE
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <form action="" id="deleteform" name="deleteform" method="post">
+            {% csrf_token %}
+        </form>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+{% block javascript %}
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            "lengthMenu": [
+                [3, 5, 10, -1],
+                [3, 5, 10, "All"]
+            ],
+            "pagingType": "simple_numbers"
+        });
+    });
+    function remove(id)
+    {
+        document.deleteform.action = "{% url 'delete_categories' 12345 %}".replace(/12345/, id);
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {                                                                                       
+            if (result.value) {
+              Swal.fire(
+                'Deleted!',
+                'Your file has been deleted.',
+                'success'
+              )
+              event.preventDefault();
+              document.getElementById('deleteform').submit()
+            }
+          })
+    }
+</script>
+{% endblock javascript %}
