@@ -14,8 +14,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <title>Django Base Startup</title>
     <link rel="stylesheet" href="{% static "sass/app.css" %}">
+
     {% block css %}
-    
+
     {% endblock css %}
 </head>
 
@@ -31,17 +32,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </ul>
 
             <!-- SEARCH FORM -->
-            <form class="form-inline ml-3">
-                <div class="input-group input-group-sm">
-                    <input class="form-control form-control-navbar" type="search" placeholder="Search"
-                        aria-label="Search">
-                    <div class="input-group-append">
-                        <button class="btn btn-navbar" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
         </nav>
         <!-- /.navbar -->
 
@@ -49,7 +39,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <aside class="main-sidebar sidebar-light-danger elevation-4">
             <!-- Brand Logo -->
             <a href="index3.html" class="brand-link">
-                <img src="{% static "img/logo.ico" %}" alt="CoffeShopKu" class="brand-image img-circle elevation-3"
+                <img src="{% static "img/logo.png" %}" alt="CoffeShopKu" class="brand-image img-circle elevation-3"
                     style="opacity: .8">
                 <span class="brand-text font-weight-light">CoffeShopKu</span>
             </a>
@@ -59,7 +49,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{% get_media_prefix %}{{request.user.avatar}}" class="img-circle elevation-2" alt="User Image">
+                        <img src="{% get_media_prefix %}{{request.user.avatar}}" class="img-circle elevation-2"
+                            alt="User Image">
                     </div>
                     <div class="info">
                         <a href="#" class="d-block">{{ request.user }}</a>
@@ -72,8 +63,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                        with font-awesome or any other icon font library -->
-                       <li class="nav-item">
-                            <a href="{% url 'profile_url' request.user.id %}" class="{% active_link 'profile_url' 'active-link' pk=request.path|last %} nav-link">
+                        <li class="nav-item">
+                            <a href="{% url 'profile_url' request.user.id %}"
+                                class="{% active_link 'profile_url' 'active-link' pk=request.path|last %} nav-link">
                                 <i class="nav-icon fas fa-user-alt"></i>
                                 <p>
                                     Profile
@@ -81,13 +73,54 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{% url 'dashboard' %}" class="{% active_link 'dashboard' 'active-link' %} nav-link">
+                            <a href="{% url 'dashboard' %}"
+                                class="{% active_link 'dashboard' 'active-link' %} nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
                                     Dashboard
                                 </p>
                             </a>
                         </li>
+                        <li
+                            class="nav-item has-treeview {% active_link 'order_list_products' 'menu-open' strict=True %}">
+                            <a href="#" class="nav-link active">
+                                <i class="nav-icon fas fa-cash-register"></i>
+                                <p>
+                                    Management Order
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{% url 'order_list_products' %}"
+                                        class="{% active_link 'order_list_products' 'active-link' %} nav-link">
+                                        <i class="nav-icon fa fa-shopping-cart"></i>
+                                        <p>
+                                            Order Transaction
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'ordes_list' %}"
+                                        class="{% active_link 'ordes_list' 'active-link' %} nav-link">
+                                        <i class="nav-icon fas fa-clipboard-list"></i>
+                                        <p>
+                                            Order List
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'report_excel' %}"
+                                        class="{% active_link 'report_excel' 'active-link' %} nav-link">
+                                        <i class="nav-icon fas fa-file-excel"></i>
+                                        <p>
+                                            Report
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        {% if perms.accounts.view_user %}
                         <li class="nav-item has-treeview {% active_link 'permissions_groups' 'menu-open' %}{% active_link 'groups_list' 'menu-open' %}{% active_link 'users_list || add_user'  'menu-open' %}{% active_link 'update_user' 'menu-open' pk=request.path|last %}">
                             <a href="#" class="nav-link active">
                                 <i class="nav-icon fas fa-users-cog"></i>
@@ -98,25 +131,30 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{% url 'users_list' %}" class="{% active_link 'users_list || add_user'  'active-link' strict=True  %}{% active_link 'update_user' 'active-link' strict=True pk=request.path|last %}  nav-link">
+                                    <a href="{% url 'users_list' %}"
+                                        class="{% active_link 'users_list || add_user'  'active-link' strict=True  %}{% active_link 'update_user' 'active-link' strict=True pk=request.path|last %}  nav-link">
                                         <i class="fas fa-users nav-icon"></i>
                                         <p>Users</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{% url 'groups_list' %}" class="{% active_link 'groups_list' 'active-link' strict=True %} nav-link">
+                                    <a href="{% url 'groups_list' %}"
+                                        class="{% active_link 'groups_list' 'active-link' strict=True %} nav-link">
                                         <i class="fas fa-user-friends nav-icon"></i>
                                         <p>Groups</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{% url 'permissions_groups' %}" class="{% active_link 'permissions_groups' 'active-link' strict=True  %} nav-link">
+                                    <a href="{% url 'permissions_groups' %}"
+                                        class="{% active_link 'permissions_groups' 'active-link' strict=True  %} nav-link">
                                         <i class="fas fa-user-lock nav-icon"></i>
                                         <p>Groups Permissions</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
+                        {% endif %}
+                        {% if perms.products.view_products %}
                         <li class="nav-item has-treeview {% active_link 'list_categories' 'menu-open' strict=True %}{% active_link 'list_products' 'menu-open' strict=True  %} ">
                             <a href="#" class="nav-link active">
                                 <i class="nav-icon fas fa-box-open"></i>
@@ -127,19 +165,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{% url 'list_categories' %}" class="{% active_link 'list_categories' 'active-link' strict=True %} nav-link">
+                                    <a href="{% url 'list_categories' %}"
+                                        class="{% active_link 'list_categories' 'active-link' strict=True %} nav-link">
                                         <i class="fas fa-align-justify nav-icon"></i>
                                         <p>Categories</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{% url 'list_products' %}" class="{% active_link 'list_products' 'active-link' strict=True  %} nav-link">
+                                    <a href="{% url 'list_products' %}"
+                                        class="{% active_link 'list_products' 'active-link' strict=True  %} nav-link">
                                         <i class="fas fa-shopping-bag nav-icon"></i>
                                         <p>Products</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a href="{% url 'logout_url' %}" class="nav-link">
                                 <i class="nav-icon fas fa-power-off"></i>
@@ -167,7 +208,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item {{breadcrumb.class}}">{% if breadcrumb2  %}<a href="{% url breadcrumb.url %}">{{breadcrumb.content}}</a></li>{% else %}{{breadcrumb.content}}</li>{% endif %}
+                                <li class="breadcrumb-item {{breadcrumb.class}}">{% if breadcrumb2  %}<a
+                                        href="{% url breadcrumb.url %}">{{breadcrumb.content}}</a></li>
+                                {% else %}{{breadcrumb.content}}</li>{% endif %}
                                 <li class="breadcrumb-item {{breadcrumb2.class}}">{{breadcrumb2.content}}</li>
 
                             </ol>

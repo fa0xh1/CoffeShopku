@@ -28,7 +28,7 @@ class Products(models.Model):
     code        = models.CharField(max_length=50, unique=True)
     photo       = models.ImageField(upload_to=path_and_rename)
     description = models.CharField(max_length=191, blank=True, null=True)
-    stock       = models.CharField(max_length=80)
+    stock       = models.PositiveIntegerField()
     price       = models.CharField(max_length=191)
     categories  = models.ForeignKey('Category',related_name='to_products',on_delete=models.CASCADE)
     created_at  = models.DateTimeField(auto_now_add=True)

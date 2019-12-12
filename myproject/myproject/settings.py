@@ -25,7 +25,7 @@ SECRET_KEY = 'sp$ouoorr5^2s20*-7ix$=i30zgi8_-p31r60+$*68!y54hgst'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'active_link',
     'django_extensions',
     'django_cleanup',
+    'cart',
 ]
 
 AUTH_USER_MODEL = 'accounts.User' # new
@@ -92,6 +93,12 @@ DATABASES = {
         'PORT': '3306'
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 
 
@@ -119,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Jakarta'
 
 USE_I18N = True
 

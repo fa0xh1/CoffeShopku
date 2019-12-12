@@ -9,7 +9,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
 class CategoriesViews(PermissionRequiredMixin,SuccessMessageMixin, FormView):
-    permission_required = ('products.add_category', 'products.view_category','products.delete_category','products.change_category')
+    permission_required = ('products.add_category', 'products.view_category','products.change_category')
     success_url         = 'list_categories'
     form_class          = CategoryForm
     model               = Category
@@ -61,11 +61,16 @@ class CategoriesViews(PermissionRequiredMixin,SuccessMessageMixin, FormView):
             raise ImproperlyConfigured("No URL to redirect to. Provide a success_url.")
         return reverse(self.success_url)  # success_url may be lazy
 
-class DeleteCategories(SuccessMessageMixin,DeleteView):
+class DeleteCategories(PermissionRequiredMixin,SuccessMessageMixin,DeleteView):
+    permission_required = ('products.delete_category')
     model = Category
     pk_url_kwarg = 'pk'
     success_url = 'list_categories'
     success_message = "Categories %(name)s was deleted successfully."
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return HttpResponseRedirect('/dashboard/')
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)    
     def delete(self, request, *args, **kwargs):
@@ -79,8 +84,13 @@ class DeleteCategories(SuccessMessageMixin,DeleteView):
             raise ImproperlyConfigured(
                 "No URL to redirect to. Provide a success_url.")
 
-class ProductsViews(ListView):
+class ProductsViews(PermissionRequiredMixin,ListView):
     model = Products
+    permission_required = ('products.view_products')
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return HttpResponseRedirect('/dashboard/')
     def get_context_data(self, **kwargs):
         kwargs['heading_title'] = "Management Products"
         kwargs['breadcrumb']        = {'content':'Products','class':'active'}
@@ -89,9 +99,14 @@ class ProductsViews(ListView):
         # Add in a QuerySet of all the books
         return context
 
-class CreateProduct(CreateView):
+class CreateProduct(PermissionRequiredMixin,CreateView):
     form_class = ProductsForm
+    permission_required = ('products.add_products')
     success_url = 'list_products'
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return HttpResponseRedirect('/dashboard/')
     def get_context_data(self, **kwargs):
         kwargs['form']               = self.get_form()
         kwargs['heading_title']      = "Management Products"
@@ -116,10 +131,15 @@ class CreateProduct(CreateView):
         """If the form is invalid, render the invalid form."""
         return self.render_to_response(self.get_context_data())
 
-class UpdateProduct(UpdateView):
+class UpdateProduct(PermissionRequiredMixin,UpdateView):
+    permission_required = ('products.change_products')
     form_class = ProductsForm
     model = Products
     success_url     = 'list_products'
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return HttpResponseRedirect('/dashboard/')
     def get_context_data(self, **kwargs):
         """Insert the form into the context dict."""
         product_update = self.model.objects.get(pk=self.kwargs['pk'])
@@ -144,11 +164,16 @@ class UpdateProduct(UpdateView):
             raise ImproperlyConfigured("No URL to redirect to. Provide a success_url.")
         return reverse_lazy(self.success_url)  # success_url may be lazy
 
-class DeleteProduct(SuccessMessageMixin,DeleteView):
+class DeleteProduct(PermissionRequiredMixin,SuccessMessageMixin,DeleteView):
+    permission_required = ('products.delete_products')
     model = Products
     pk_url_kwarg = 'pk'
     success_url = 'list_products'
     success_message = "Product %(name)s was deleted successfully."
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return HttpResponseRedirect('/dashboard/')
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)    
     def delete(self, request, *args, **kwargs):

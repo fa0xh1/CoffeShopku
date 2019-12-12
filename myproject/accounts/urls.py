@@ -3,7 +3,7 @@ from django.contrib.auth.views import LoginView,LogoutView
 from django.contrib.auth.decorators import login_required, permission_required
 from .views import *
 urlpatterns = [
-    path('signup/', SignUp.as_view(template_name="auth/signup.html"), name='signup'),
+    # path('signup/', SignUp.as_view(template_name="auth/signup.html"), name='signup'),
     path('login/', LoginView.as_view(template_name='auth/login.html',redirect_authenticated_user=True),name="login_url"),
     path('logout/', LogoutView.as_view(next_page='login_url'),name="logout_url"),
     path('list', login_required(UsersView.as_view(template_name="accounts/list_users.html")), name="users_list"),

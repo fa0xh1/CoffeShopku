@@ -14,13 +14,6 @@
             <form role="form" method="POST">
                     {% csrf_token %}
                     {% if form.errors %}
-                        {% for field in form %}
-                            {% for error in field.errors %}
-                                <div class="alert alert-danger">
-                                    <strong>{{ error|escape }}</strong>
-                                </div>
-                            {% endfor %}
-                        {% endfor %}
                         {% for error in form.non_field_errors %}
                             <div class="alert alert-danger">
                                 <strong>{{ error|escape }}</strong>
@@ -28,22 +21,41 @@
                         {% endfor %}
                     {% endif %}
                 <div class="card-body">
-                    <input type="hidden" id="id" name="id" value="{{ users.id }}">
                     <div class="form-group">
                         <label for="firs_name">First Name</label>
-                        <input type="text" class="form-control" id="first_name" value="{{ users.first_name }}" name="first_name" placeholder="Enter first name">
+                        <input type="text" class="form-control" autocomplete="off" value="{% if form.first_name.value == None %}{%else%}{{form.first_name.value}}{% endif %}" id="first_name" value="{{ users.first_name }}" name="first_name" placeholder="Enter first name">
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.first_name.errors}}</strong>
+                            </div>
+                        {% endif%}
                     </div>
                     <div class="form-group">
                         <label for="last_name">Last Name</label>
-                        <input type="text" class="form-control" id="last_name" value="{{ users.last_name }}" name="last_name" placeholder="Enter last name">
+                        <input type="text" class="form-control" autocomplete="off" id="last_name" value="{% if form.last_name.value == None %}{%else%}{{form.last_name.value}}{% endif %}" value="{{ users.last_name }}" name="last_name" placeholder="Enter last name">
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.last_name.errors}}</strong>
+                            </div>
+                        {% endif%}
                     </div>
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username" value="{{ users.username }}" name="username" placeholder="Enter username">
+                        <input type="text" class="form-control" id="username" autocomplete="off" value="{% if form.username.value == None %}{%else%}{{form.username.value}}{% endif %}" value="{{ users.username }}" name="username" placeholder="Enter username">
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.username.errors}}</strong>
+                            </div>
+                        {% endif%}
                     </div>
                     <div class="form-group">
                         <label for="email">Email address</label>
-                        <input type="email" class="form-control" id="email" value="{{ users.email }}" name="email" placeholder="Enter email">
+                        <input type="email" class="form-control" id="email" value="{% if form.email.value == None %}{%else%}{{form.email.value}}{% endif %}" value="{{ users.email }}" name="email" placeholder="Enter email">
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.email.errors}}</strong>
+                            </div>
+                        {% endif%}
                     </div>
                     <div class="form-group">
                         <label for="groups">Groups</label>
@@ -52,6 +64,11 @@
                                     <option value="{{x.id}}"{% if x.id in curent_groups %}selected{% endif %}>{{x.name}}</option>
                             {%endfor%}
                         </select>
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.groups.errors}}</strong>
+                            </div>
+                        {% endif%}
                     </div>
                     <div class="form-group">
                         <label for="user_permissions">Permissions</label>
@@ -60,14 +77,29 @@
                                     <option value="{{x.id}}"{% if x.id in curent_permissions %}selected{% endif %}>{{x.name}}</option>
                             {%endfor%}
                         </select>
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.user_permissions.errors}}</strong>
+                            </div>
+                        {% endif%}
                     </div>
                     <div class="form-group">
                         <label for="password">Password (Optional)</label>
                         <input type="password" class="form-control" id="password" name="password1" placeholder="Password">
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.password1.errors}}</strong>
+                            </div>
+                        {% endif%}
                     </div>
                     <div class="form-group">
                         <label for="password">Retype password</label>
                         <input type="password" class="form-control" id="password" name="password2" placeholder="Password">
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.password2.errors}}</strong>
+                            </div>
+                        {% endif%}
                     </div>
                 </div>
                 <!-- /.card-body -->

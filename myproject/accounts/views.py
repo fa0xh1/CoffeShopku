@@ -13,11 +13,17 @@ from django.contrib import messages
 from django.contrib.auth.models import Permission,Group
 from django.contrib.contenttypes.models import ContentType
 from django.views.generic import FormView
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-class UsersView(ListView):
+class UsersView(PermissionRequiredMixin,ListView):
 # Create your views here.
     model = User
+    permission_required = ('accounts.view_user')
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return HttpResponseRedirect('/dashboard/')
 
     def get_context_data(self, **kwargs):
         kwargs['heading_title']        = "Management Users"
@@ -27,10 +33,15 @@ class UsersView(ListView):
         # Add in a QuerySet of all the books
         return context
 
-class CreateUser(CreateView):
+class CreateUser(PermissionRequiredMixin,CreateView):
 
     form_class = AddUserForm
     success_url = 'users_list'
+    permission_required = ('accounts.add_user')
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return HttpResponseRedirect('/dashboard/')
     def get_context_data(self, **kwargs):
         """Insert the form into the context dict."""
         kwargs = {
@@ -154,10 +165,15 @@ class ProfileView(UpdateView):
         self.object = form.save()
         return super().form_valid(form)
 
-class UpdateUser(UpdateView):
+class UpdateUser(PermissionRequiredMixin,UpdateView):
     form_class      = UpdateUserForm
     model           = User
     success_url     = 'users_list'
+    permission_required = ('accounts.change_user')
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return HttpResponseRedirect('/dashboard/')
     # That should be all you need. If you need to do any more custom stuff 
     # before saving the form, override the `form_valid` method, like this:
     def get_context_data(self,**kwargs):
@@ -201,10 +217,15 @@ class UpdateUser(UpdateView):
         self.object = form.save()
         return super().form_valid(form)
 
-class DeleteUser(DeleteView):
+class DeleteUser(PermissionRequiredMixin,DeleteView):
     model           = User
     pk_url_kwarg    = 'pk'
     success_url     = 'users_list'
+    permission_required = ('accounts.delete_user')
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return HttpResponseRedirect('/dashboard/')
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)    
 
@@ -219,11 +240,16 @@ class SignUp(generic.CreateView):
     form_class  = AddUserForm
     success_url = reverse_lazy('login_url')
 
-class GroupsPermissions(FormView):
+class GroupsPermissions(PermissionRequiredMixin,FormView):
 
     template_name   = None
     form_class      = GroupsForm
-    success_url     = 'groups_permissions'	
+    success_url     = 'groups_list'	
+    permission_required = ('auth.view_group','auth.change_group','auth.add_group')
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return HttpResponseRedirect('/dashboard/')
     def get_context_data(self, **kwargs):
         """Insert the form into the context dict."""
         if 'form' not in kwargs:
@@ -242,10 +268,15 @@ class GroupsPermissions(FormView):
         if not self.success_url:
             raise ImproperlyConfigured("No URL to redirect to. Provide a success_url.")
         return reverse_lazy(self.success_url)  # success_url may be lazy
-class DeleteGroup(DeleteView):
+class DeleteGroup(PermissionRequiredMixin,DeleteView):
     model           = Group
     pk_url_kwarg    = 'pk'
-    success_url     = 'groups_permissions'
+    success_url     = 'groups_list'
+    permission_required = ('auth.delete_group')
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return HttpResponseRedirect('/dashboard/')
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
 
@@ -256,11 +287,15 @@ class DeleteGroup(DeleteView):
             raise ImproperlyConfigured(
                 "No URL to redirect to. Provide a success_url.")
 
-class PermissionsGroups(FormView):
+class PermissionsGroups(PermissionRequiredMixin,FormView):
     template_name   = None
     form_class      = PermissionsForm
     success_url     = 'permissions_groups'
-
+    permission_required = ('auth.view_group','auth.change_group','auth.add_group','auth.add_permission','auth.change_permission','auth.delete_permission')
+    def handle_no_permission(self):
+        # add custom message
+        messages.error(self.request, 'You have no permission')
+        return HttpResponseRedirect('/dashboard/')
     def get(self, request, *args, **kwargs):
         """Handle GET requests: instantiate a blank version of the form."""
         # if request.GET['groups'] != None:

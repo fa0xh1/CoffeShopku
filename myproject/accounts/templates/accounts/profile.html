@@ -37,20 +37,10 @@
             </div>
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header p-2">
-                        <ul class="nav nav-pills">
-                            <li class="nav-item"><a class="nav-link" href="#activity" data-toggle="tab">Activity</a>
-                            </li>
-                            <li class="nav-item"><a class="nav-link active show" href="#settings"
-                                    data-toggle="tab">Settings</a></li>
-                        </ul>
+                    <div style="background-color:red;color:white;" class="card-header p-2">
+                            <h3 class="text-center">Profile Page</h3>
                     </div><!-- /.card-header -->
                     <div class="card-body">
-                        <div class="tab-content">
-                            <!-- Activity Tab -->
-                            <div class="tab-pane" id="activity">
-                                <h3 class="text-center">Display User Activity</h3>
-                            </div>
                             <!-- Setting Tab -->
                             <div class="tab-pane active show" id="settings">
                                 {% if form.errors %}
@@ -72,25 +62,25 @@
                                     <div class="form-group">
                                         <label for="first_name" class="col-sm-2 control-label">First Name</label>
                                         <div class="col-sm-12">
-                                            <input type="text" class="form-control" id="first_name" value="{{ user.first_name }}" name="first_name" placeholder="Enter first name">
+                                            <input type="text" autocomplete="off" class="form-control" id="first_name" value="{{ user.first_name }}" name="first_name" placeholder="Enter first name">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="last_name" class="col-sm-2 control-label">Last Name</label>
                                         <div class="col-sm-12">
-                                            <input type="text" class="form-control" id="last_name" value="{{ user.last_name }}" name="last_name" placeholder="Enter last name">
+                                            <input type="text" autocomplete="off" class="form-control" id="last_name" value="{{ user.last_name }}" name="last_name" placeholder="Enter last name">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="username" class="col-sm-2 control-label">Username</label>
                                         <div class="col-sm-12">
-                                            <input type="text" class="form-control" id="username" value="{{ user.username }}" name="username" placeholder="Enter username">
+                                            <input type="text" autocomplete="off" class="form-control" id="username" value="{{ user.username }}" name="username" placeholder="Enter username">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="email" class="col-sm-2 control-label">Email</label>
                                         <div class="col-sm-12">
-                                            <input type="email" class="form-control" id="email" value="{{ user.email }}" name="email" placeholder="Enter email">
+                                            <input type="email" autocomplete="off" class="form-control" id="email" value="{{ user.email }}" name="email" placeholder="Enter email">
                                         </div>
                                     </div>
                                     <div class="form-group">

@@ -1,0 +1,171 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load my_filters %}
+{% block css %}
+<style>
+    .card-product:after {
+        content: "";
+        display: table;
+        clear: both;
+        visibility: hidden;
+    }
+
+    .card-product .price-new,
+    .card-product .price {
+        margin-right: 5px;
+    }
+
+    .card-product .price-old {
+        color: #999;
+    }
+
+    .card-product .img-wrap {
+        border-radius: 3px 3px 0 0;
+        overflow: hidden;
+        position: relative;
+        height: 220px;
+        text-align: center;
+    }
+
+    .card-product .img-wrap img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: cover;
+    }
+
+    .card-product .info-wrap {
+        overflow: hidden;
+        padding: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .card-product .action-wrap {
+        padding-top: 4px;
+        margin-top: 4px;
+    }
+
+    .card-product .bottom-wrap {
+        padding: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .card-product .title {
+        margin-top: 0;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-danger">
+                        <h3>Order Products</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-danger">
+                                <a class="close" href="#" data-dismiss="alert">×</a>
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="row">
+                            {% for row in products %}
+                            <div class="col-md-4">
+                                <figure class="card card-product">
+                                    <form action="{% url 'add_to_cart' %}" method="POST">
+                                        <div class="img-wrap">
+                                            <img style="width: 100%; height:200px"
+                                                src="{% get_media_prefix %}{{row.photo}}">
+                                        </div>
+                                        <figcaption class="info-wrap">
+                                            <h5 class="title text-dots"><a href="#">{{row.name}}</a></h5>
+                                            {% if row.stock != 0 %}
+                                            <h6 class="float-right">Stock : {{row.stock}}</h6>
+                                            {% endif %}
+                                            <div class="action-wrap">
+                                                {% if row.stock != 0 %}
+                                                <div class="form-group">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" id="id" name="product_id" value="{{row.id}}">
+                                                    <div class="input-group">
+                                                        <span class="input-group-btn">
+                                                            <button type="button" class="btn btn-danger btn-number"
+                                                                onclick="decreaseValue('quantity[{{row.id}}]')"
+                                                                data-type="minus" data-field="">
+                                                                <span class="fas fa-minus"></span>
+                                                            </button>
+                                                        </span>
+                                                        <input type="text" style="text-align:center;"
+                                                            id="quantity[{{row.id}}]" name="quantity"
+                                                            class="form-control input-number" value="0" min="1"
+                                                            max="100">
+                                                        <span class="input-group-btn">
+                                                            <button type="button" class="btn btn-success btn-number"
+                                                                onclick="increaseValue('quantity[{{row.id}}]')"
+                                                                data-type="plus" data-field="">
+                                                                <span class="fas fa-plus"></span>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <button type="submit" class="btn btn-primary btn-md float-right"> Order
+                                                </button>
+                                                <div class="price-wrap h4">
+                                                    <span class="price-new">{{row.price | currency }}</span>
+                                                </div> <!-- price-wrap.// -->
+                                            </div> <!-- action-wrap -->
+
+                                            {% else %}
+                                            <div class="form-group">
+                                                <h3>Out of stock</h3>
+                                            </div>
+                                            <br>
+                                                <button type="button" disabled class="btn btn-primary btn-md float-right"> Order
+                                                </button>
+                                                <div class="price-wrap h4">
+                                                    <span class="price-new">{{row.price | currency }}</span>
+                                                </div> <!-- price-wrap.// -->
+                                            </div>
+                                            {% endif %}
+                            </figcaption>
+                            </form>
+                            </figure> <!-- card // -->
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            {% include "orders/products/cart.html" %}
+            {% include "orders/products/filter.html" %}
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block javascript %}
+<script type="text/javascript">
+    function increaseValue(id) {
+        var value = +document.getElementById(id).value || 0;
+        value++;
+        document.getElementById(id).value = value;
+    }
+
+    function decreaseValue(id) {
+        var value = +document.getElementById(id).value || 0;
+        value--;
+        if (value < 1) {
+            value = 0;
+        }
+        document.getElementById(id).value = value;
+    }
+</script>
+{% endblock javascript %}

@@ -1,0 +1,113 @@
+{% load my_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Invoice #{{ orders.invoice }}</title>
+    <style>
+            body{
+                padding: 0;
+                margin: 0;
+            }
+            .header{
+                border:rgba(0, 0, 0, 0.2);
+            }
+            .page{
+                max-width: 80em;
+                margin: 0 auto;
+            }
+            table th,
+            table td{
+                text-align: left;
+            }
+            table.layout{
+                width: 100%;
+                border-collapse: collapse;
+            }
+            table.display{
+                margin: 1em 0;
+            }
+            table.display th,
+            table.display td{
+                border: 1px solid black;
+                padding: .5em 1em;
+            }
+            table.display th{ background: red; color: #fff;}
+            table.display td{ background: #fff; }
+        ​
+            table.responsive-table{
+                box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+            }
+        ​
+            .listcust {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                display:table;
+                border-spacing: 10px;
+                border-collapse: separate;
+                list-style-type: none;
+            }
+            .customer {
+                padding-left: 0px;
+            }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h3 style="text-align: center;">Coffeshopku</h3>
+        <h4 style="line-height: 0px;">Invoice: #{{ orders.invoice }}</h4>
+        <p><small style="opacity: 0.5;">{{ date_order }}</small></p>
+    </div>
+    <hr>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="customer">
+        <table>
+            <tr>
+                <th>Customer Name</th>
+                <td>:</td>
+                <td>{{ orders.customer.name }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="page">
+        <table class="layout display responsive-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Amount</th>
+                    <th>Subamount</th>
+                </tr>
+            </thead>
+              
+            <tbody>
+                {% for row in order %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ row.product }}</td>
+                        <td>{{ row.price|currency }}</td>
+                        <td>{{ row.qty }} Item</td>
+                        <td>{{ row.qty|subamount:row.price|currency }}</td>
+                    </tr>
+                    {% empty %}                  
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="2">Total</th>
+                    <td> {{ totalPrice.totalPrice|currency }}</td>
+                    <td>{{ totalQty.totalQty }} Item</td>
+                    <td>{{ total.total|currency }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</body>
+</html>

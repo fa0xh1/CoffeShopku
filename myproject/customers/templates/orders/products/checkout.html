@@ -1,0 +1,103 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<div class="row">
+    <!-- left column -->
+    <div class="col-md-8 align-center">
+        <!-- general form elements -->
+        <div class="card card-success">
+            <div class="card-header d-flex justify-content-center">
+                <h2 class="card-title">{{ card_title }}</h2>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-danger">
+                        <a class="close" href="#" data-dismiss="alert">×</a>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                <!-- form start -->
+                <form role="form" method="POST">
+                    <div class="card-body">
+                        {% csrf_token %}
+                        <input type="hidden" id="customer" name="customer" value="customer">
+                        <div id="name_input" style="display: none;" class="form-group">
+                            <label for="name">Name Customer: <span class="text-danger"> *</span></label>
+                            <input type="text" class="form-control" autocomplete="off" id="name_input" name="name_input"
+                                placeholder="Enter name customers">
+                        </div>
+                        <div id="name_select" style="display: block;" class="form-group">
+                            <label for="name">Name Customer<span class="text-danger"> *</span></label>
+                            <select class="form-control select2" style="width: 100%;" onchange="checkCustomer(this);" name="name" id="name">
+                                {% for x in customers %}
+                                    <option value="{{x.name}}">{{x.name}}</option>
+                                {%endfor%}
+                                    <option value="others">Others</option>
+                            </select>
+                        </div>
+                        {% if not customers %}
+                          <script>
+                            document.getElementById("name_input").style.display = "block";
+                          </script>
+                        {% endif %}
+                        <div class="form-group">
+                            <label for="barista">Barista<span class="text-danger"> *</span></label>
+                            <select class="form-control select2" style="width: 100%;" name="barista"  id="barista">
+                                {% for x in barista %}
+                                    <option value="{{x.id}}" >{{x.username}}</option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email address</label>
+                            <input type="email" class="form-control" autocomplete="off" id="email" name="email" placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea name="address" id="address" style="width: 100%;height=30"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="text" class="form-control" autocomplete="off" id="phone" name="phone" placeholder="Enter phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="payment">Payment<span class="text-danger"> *</span></label>
+                            <input type="number" class="form-control" id="payment" name="payment" placeholder="Enter payment">
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                    <button type="submit" class="btn btn-primary float-right">Order Now</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+            {% include "orders/products/cart.html" %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascript %}
+  <script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            theme: 'bootstrap4'
+        });
+        if($('#name_select').val() == "others")
+        {
+            console.log('it exists!');
+        }
+    });
+    function checkCustomer(that) {
+        if (that.value === "others") {
+            document.getElementById("name_input").style.display = "block";
+            document.getElementById("name_select").style.display = "none";
+        } else {
+            document.getElementById("name_input").style.display = "none";
+            document.getElementById("name_select").style.display = "block";
+        }
+    }
+  </script>
+{% endblock javascript %}

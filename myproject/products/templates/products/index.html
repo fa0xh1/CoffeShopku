@@ -1,16 +1,25 @@
 {% extends "layouts/base.html" %}
 {% load static %}
+{% block css %}
+  <style>
+        .dataTables_wrapper .dt-buttons {
+            text-align:center;
+          }
+  </style>
+{% endblock css %}
 {% block content %}
 <section class="content">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header with-border">
+                    <div class="card-header with-border d-flex justify-content-end"">
                         <h3 class="card-title"><a href="{% url 'add_product' %}"
                                 class="btn btn-primary btn-sm">
                                 <i class="fa fa-edit"></i> Tambah
                             </a></h3>
+                            
+                        <div class="info text-right"></div>
                     </div>
                     <div class="card-body">
                         {% if messages %}
@@ -70,15 +79,24 @@
 {% endblock content %}
 
 {% block javascript %}
-  <script>
+<script src="{% static "js/datatables.net-buttons/js/buttons.flash.min.js" %}"></script>
+<script src="{% static "js/jszip/dist/jszip.min.js" %}"></script>
+<script src="{% static "js/pdfmake/pdfmake.min.js" %}"></script>
+<script src="{% static "js/pdfmake/vfs_fonts.js" %}"></script>
+<script src="{% static "js/datatables.net-buttons/js/buttons.html5.min.js" %}"></script>
+<script src="{% static "js/datatables.net-buttons/js/buttons.print.min.js" %}"></script>
+<script src="{% static "js/datatables.net-buttons/js/buttons.colVis.min.js" %}"></script>
+<script>
       $(document).ready(function () {
-        $('#myTable').DataTable({
-            "lengthMenu": [
+        var table = $('#myTable').DataTable({
+            lengthMenu: [
                 [10, 25, 50, -1],
                 [10, 25, 50, "All"]
             ],
-            "pagingType": "simple_numbers"
+            dom: 'lfBrtip',
+            buttons: ['copy', 'excelFlash', 'excel', 'pdf', 'print']
         });
+        
     });
   </script>
 {% endblock javascript %}

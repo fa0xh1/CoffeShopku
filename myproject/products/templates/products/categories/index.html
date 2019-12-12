@@ -76,8 +76,6 @@
                                         <td>
                                             <a href="#myModal{{row.id}}" data-toggle="modal" title="Edit" class="btn btn-warning"
                                                 id='{{row.id}}'><i class="fa fa-edit"></i> Edit</a>
-                                            <a href="{% url 'delete_categories' row.id %}" class="btn btn-danger"
-                                                id='{{row.id}}'><i class="fa fa-trash"></i> Delete</a>
                                             <a href="javascript:void(0)" class="btn btn-danger" onclick="remove('{{row.id}}')"
                                             id='{{row.id}}'><i class="fa fa-trash"></i> Delete</a>
                                         </td>

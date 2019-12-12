@@ -1,7 +1,9 @@
 require('./bootstrap');
 
 import 'select2';                       // globally assign select2 fn to $ element  // optional if you have css loader
-
+import Chart from 'chart.js'
+require('bootstrap-datepicker/js/bootstrap-datepicker.js');
+require( 'datatables.net-buttons-bs4' )( $ );
 $(() => {
   $('.select2-enable').select2();
 });

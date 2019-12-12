@@ -1,13 +1,193 @@
 {% extends "layouts/base.html" %}
-
+{% load static %}
+{% block css %}
+{% endblock css %}
+{% load my_filters %}
 {% block content %}
-<h1>Welcome, {{user.username}}</h1>
-    {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-danger alert-dismissible {% if message.tags %}alert-{{ message.tags }}" {% endif %}>
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ message }}
-            {% endfor %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-danger alert-dismissible {% if message.tags %}alert-{{ message.tags }}" {% endif %}>
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+<section class="content" id="dw">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Dashboard</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="small-box bg-info">
+                                    <div class="inner">
+                                        <h3>{{total_item}}</h3>
+                                        <p>Item Sold</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="small-box bg-success">
+                                    <div class="inner">
+                                        <h3>{{total_omset|currency}}</h3>
+                                        <p>Total Omset</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="small-box bg-primary">
+                                    <div class="inner">
+                                        <h3>{{total_customers}}</h3>
+                                        <p>Total Customers</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fas fa-user-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="card-title">Sales</h3>
+                            <a href="javascript:void(0);">View Report</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- /.d-flex -->
+                        <div class="position-relative">
+                            <canvas id="sales-chart" height="200"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="card-title">Best selling item</h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="position-relative">
+                                <canvas id="pieChart" style="height:230px; min-height:230px"></canvas>
+                            </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    {% endif %}
-{% endblock %}
+    </div>
+</section>
+{% endblock content %}
+{% block javascript %}
+<script src="{% static 'js/palette.js' %}"></script>
+<script>
+
+    let result = [];
+    let i;
+    let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                
+    for(i=29; i >= 0; i--){
+        let today = new Date();
+        let yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - i);
+        let month = yesterday.getMonth();
+        yesterday = yesterday.getDate() + ' ' + monthNames[month];
+        result.push(yesterday);
+    }
+    let myData = {{qty_producs}}
+    var donutData = {
+        labels: {{labels_products}},
+        datasets: [
+          {
+            data: myData,
+            backgroundColor: palette('tol', myData.length).map(function(hex) {
+                return '#' + hex;
+              })          
+            }
+        ]
+      }
+    var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+    var pieData        = donutData;
+    var pieOptions     = {
+      maintainAspectRatio : false,
+      responsive : true,
+    }
+    //Create pie or douhnut chart
+    // You can switch between pie and douhnut using the method below.
+    var pieChart = new Chart(pieChartCanvas, {
+      type: 'pie',
+      data: pieData,
+      options: pieOptions      
+    })
+
+    var ctx = document.getElementById('sales-chart').getContext('2d');
+    var myChart = new Chart(ctx, {
+            type: 'bar',// bar, horizontalBar, pie, line, doughnut, radar, polarArea
+            data: {
+                labels: result,
+                datasets: [{
+                    type: 'bar',
+                    label: 'Total Sales',
+                    data: {{saleschart}},
+                    backgroundColor: '#FF5B5B'
+                }
+                ]
+                
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Grafik sales monthly',
+                },
+                gridLines: {
+                    display: true,
+                    drawBorder: true,
+                    drawOnChartArea: false,
+                },
+                legend: {
+                    disblay: true,
+                    position: 'right',
+                    labels: {
+                        fontColor: '#000'
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            display:false
+                        }
+                    }],
+                    yAxes: [{
+                        gridLines: {
+                            display: true,
+                            drawBorder: true,
+                            drawOnChartArea: true,
+                        },
+                        ticks: {
+                            beginAtZero: true,
+                        }
+                    }]
+                }
+
+            }
+        });
+    </script>
+{% endblock javascript %}
