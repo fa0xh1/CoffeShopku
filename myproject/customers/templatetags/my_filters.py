@@ -7,6 +7,8 @@ def currency(dollars):
     if(dollars):
         dollars = round(float(dollars), 2)
         return "IDR %s%s" % (intcomma(int(dollars)), ("K"))
+    if(dollars == 0):
+        return "IDR %s%s" % (intcomma(int(0)), ("K"))
 def subamount(qty,price):
     return qty * price
 def changepaid(total,paid):

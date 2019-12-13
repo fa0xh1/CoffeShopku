@@ -122,9 +122,13 @@ class Checkout(CreateView):
                     qty.append(x.quantity)
                 queryset = Products.objects.filter(id__in=product).values('stock')
                 for i in range(len(queryset)):
-                    if queryset[i]['stock']<=qty[i]:
+                    if queryset[i]['stock'] < qty[i]:
                         orders = False
-                if request.POST['payment'] == None:
+                if not Item.objects.all():
+                    orders = False
+                if int(request.POST['payment']) < int(cart.summary()):
+                    orders = False
+                if request.POST['payment'] == "":
                     orders = False
 
                 name = None
@@ -133,23 +137,21 @@ class Checkout(CreateView):
                 else:
                     name = request.POST['name']
 
-                if name == None:
+                if name == "":
                     orders = False
-                if request.POST['barista'] == None:
+                if request.POST['barista'] == "":
                     orders = False
                 
                 if orders:    
                     barista  = User.objects.get(id=request.POST['barista']).id
-                    customer = Customers.objects.filter(name=name).first()
-                    if not customer:
-                        customer = Customers.objects.create(
-                            name=name,
-                            email=request.POST['email'],
-                            address=request.POST['address'],
-                            phone=request.POST['phone'],
-                            payment=request.POST['payment'],
-                            barista_id=barista,
-                        )
+                    customer = Customers.objects.create(
+                        name=name,
+                        email=request.POST['email'],
+                        address=request.POST['address'],
+                        phone=request.POST['phone'],
+                        payment=request.POST['payment'],
+                        barista_id=barista,
+                    )
 
                     order = Orders(
                         invoice=generateInvoice(),
@@ -173,10 +175,10 @@ class Checkout(CreateView):
                                 cart.clear()
                     return HttpResponseRedirect(self.get_success_url())
                 else:
-                    messages.error(request,'Order fail out of stock or form important null')
+                    messages.error(request,'Order fail out of stock or form important null or payment minus')
                     return redirect(reverse('check_out_product'))
             except Exception as e:
-                messages.error(request,'Error! Code: {c}, Message, {m}'.format(c = type(e).__name__, m = str(e)))
+                messages.error(request,'Order fail out of stock or form important null or cart null or payment minus')
                 return redirect(reverse('check_out_product'))
     def get_success_url(self):
         """Return the URL to redirect to after processing a valid form."""

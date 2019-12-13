@@ -20,7 +20,6 @@ django-extensions==2.2.1
 django-rest-knox==4.1.0
 django-sass-processor==0.7.3
 django-templated-mail==1.1.1
-django-userena-rf==0.1
 djangomix==1.1.1
 djangorestframework==3.10.3
 djangorestframework-datatables==0.5.0
