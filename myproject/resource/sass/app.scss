@@ -1,0 +1,30 @@
+
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+$fa-font-path:        "../webfonts";
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+@import "~datatables.net-bs4/css/dataTables.bootstrap4.min.css";
+@import '~admin-lte/dist/css/adminlte.css';
+@import '~admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css';
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/solid.scss";
+@import "~@fortawesome/fontawesome-free/scss/brands.scss";
+@import "~@fortawesome/fontawesome-free/scss/regular.scss";
+@import '~bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css';
+@import '~select2/dist/css/select2.css';
+.navbar-laravel {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+  
+.active-link{
+    color: black;
+    background-color:  rgba(0, 0, 0, 0.1);
+}
+  

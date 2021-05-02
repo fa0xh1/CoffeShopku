@@ -1,0 +1,138 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">
+                            <h4 class="card-title">Add New Permission</h4>
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="codename">Code_name</label>
+                                <input type="text" name="codename" class="form-control " required>
+                                <p class="text-danger"></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" class="form-control " required>
+                                <p class="text-danger"></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Content Type</label>
+                                <select name="content_type" class="form-control" required>
+                                        {% for x in form.content_type %}
+                                            {{x}}
+                                        {% endfor%}
+                                </select>
+                                <p class="text-danger"></p>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary btn-sm">
+                                    Add New
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Set Permission to Groups</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="GET">
+                            <div class="form-group">
+                                <label for="">Roles</label>
+                                <div class="input-group">
+                                    <select name="groups" class="form-control">
+                                        {% for row in user_groups %}
+                                        <option value="{{ row.id }}" {% if row.id  == request.GET.groups|add:0 %}
+                                            selected="selected" {% endif %}>{{ row.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-danger">Check!</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
+                        {% if user_permissions %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="hidden" name="manage_permission" value="PUT">
+                                <div class="nav-tabs-custom">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_1" data-toggle="tab">Permissions</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_1">
+                                            <select class="select2 col-sm-12" style="background-color: black;" multiple="multiple" id="user_permissions" name="user_permissions">
+                                                {% for x in user_permissions %}
+                                                        <option value="{{x.id}}"{% if x.id in curent_permissions %}selected{% endif %}>{{x.name}}</option>
+                                                {%endfor%}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pull-right">
+                                <button  type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-send"></i> Set Permission
+                                </button>
+                            </div>
+                        </form>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+{% block javascript %}
+<script src="{% static "js/jquery.bootstrap-duallistbox.min.js" %}"></script>
+<style>
+    .removeall,.remove {
+        position:relative;
+        transition: .5s ease;
+        right: -300px;
+    }
+    .moveall,.move {
+        position:relative;
+        transition: .5s ease;
+        left: -10px;
+    }
+</style>
+<script>
+    $(document).ready(function() {
+        var demo2 = $('.select2').bootstrapDualListbox({
+            moveAllLabel: 'Move all',
+            removeAllLabel: 'Remove all',
+            moveOnSelect: false,
+            filterTextClear: false,
+            infoText: false,
+          });
+          $(function () {
+                var dualListContainer = $('select[name="user_permissions"]').bootstrapDualListbox('getContainer');
+                dualListContainer.find('.moveall i').removeClass().addClass('fas fa-chevron-right');
+                dualListContainer.find('.removeall i').removeClass().addClass('fa fa-chevron-left');
+                dualListContainer.find('.move i').removeClass().addClass('fas fa-chevron-circle-right');
+                dualListContainer.find('.remove i').removeClass().addClass('fa fa-chevron-circle-left');
+        });
+    });
+</script>
+{% endblock javascript %}

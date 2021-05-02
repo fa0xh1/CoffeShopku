@@ -1,0 +1,102 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block css %}
+  <style>
+        .dataTables_wrapper .dt-buttons {
+            text-align:center;
+          }
+  </style>
+{% endblock css %}
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header with-border d-flex justify-content-end"">
+                        <h3 class="card-title"><a href="{% url 'add_product' %}"
+                                class="btn btn-primary btn-sm">
+                                <i class="fa fa-edit"></i> Tambah
+                            </a></h3>
+                            
+                        <div class="info text-right"></div>
+                    </div>
+                    <div class="card-body">
+                        {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-success alert-dismissible {% if message.tags %}alert-{{ message.tags }}" {% endif %}>
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    {{ message }}   
+                                    {% endfor %}
+                            </div>
+                        {% endif %} 
+                        <div class="table-responsive">
+                            <table id="myTable" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nama Produk</th>
+                                        <th>Stok</th>
+                                        <th>Harga</th>
+                                        <th>Kategori</th>
+                                        <th>Last Update</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in object_list %}
+                                        <tr>
+                                            <td>
+                                            {% if row.photo %} 
+                                                <img src="{% get_media_prefix %}{{row.photo}}" 
+                                                    alt="{{ row.name }}" width="50px" height="50px">
+                                            {%else%}
+                                                <img src="http://via.placeholder.com/50x50" alt="{{ row.name }}">
+                                            {%endif%}
+                                            </td>
+                                            <td>{{row.name}}</td>
+                                            <td>{{row.stock}}</td>
+                                            <td>{{row.price}}</td>
+                                            <td>{{row.categories}}</td>
+                                            <td>{{row.updated_at}}</td>
+                                            <td>
+                                                <a href="{% url 'update_product' row.id %}" class="btn btn-warning"
+                                                    id='{{row.id}}'><i class="fa fa-edit"></i> Edit</a>
+                                                <a href="{% url 'delete_product' row.id %}" class="btn btn-danger"
+                                                    id='{{row.id}}'><i class="fa fa-trash"></i> Delete</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block javascript %}
+<script src="{% static "js/datatables.net-buttons/js/buttons.flash.min.js" %}"></script>
+<script src="{% static "js/jszip/dist/jszip.min.js" %}"></script>
+<script src="{% static "js/pdfmake/pdfmake.min.js" %}"></script>
+<script src="{% static "js/pdfmake/vfs_fonts.js" %}"></script>
+<script src="{% static "js/datatables.net-buttons/js/buttons.html5.min.js" %}"></script>
+<script src="{% static "js/datatables.net-buttons/js/buttons.print.min.js" %}"></script>
+<script src="{% static "js/datatables.net-buttons/js/buttons.colVis.min.js" %}"></script>
+<script>
+      $(document).ready(function () {
+        var table = $('#myTable').DataTable({
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            dom: 'lfBrtip',
+            buttons: ['copy', 'excelFlash', 'excel', 'pdf', 'print']
+        });
+        
+    });
+  </script>
+{% endblock javascript %}

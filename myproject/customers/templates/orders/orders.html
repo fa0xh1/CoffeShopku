@@ -1,0 +1,118 @@
+{% extends "layouts/base.html" %}
+{% load my_filters %}
+{% block css %}
+{% endblock css %}
+{% block content %}
+<section class="content" id="dw">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">Data Transactions</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="small-box bg-info">
+                                    <div class="inner">
+                                        <h3>{{total_item}}</h3>
+                                        <p>Item Sold</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="small-box bg-success">
+                                    <div class="inner">
+                                        <h3>{{total_omset|currency}}</h3>
+                                        <p>Total Omset</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="small-box bg-primary">
+                                    <div class="inner">
+                                        <h3>{{total_customers}}</h3>
+                                        <p>Total Customers</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fas fa-user-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="myTable" class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice</th>
+                                        <th>Customer</th>
+                                        <th>Phone</th>
+                                        <th>Total Shopping</th>
+                                        <th>Cashier</th>
+                                        <th>Date Transaction</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in orders %}
+                                    <tr>
+                                        <td><strong>#{{ row.invoice }}</strong></td>
+                                        <td>{{ row.customer.name }}</td>
+                                        <td>{{ row.customer.phone }}</td>
+                                        <td>{{ row.total|currency }}</td>
+                                        <td>{{ row.user.username }}</td>
+                                        <td>{{ row.created_at|date:'d-m-Y H:i:s' }}</td>
+                                        <td class="text-center">
+                                            <a href="{% url 'invoice_print' row.id %}" 
+                                                target="_blank"
+                                                class="btn btn-primary btn-md">
+                                                <i class="fa fa-print"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td class="text-center" colspan="7">Tidak ada data transaksi</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+{% block javascript %}
+  <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                "lengthMenu": [
+                    [3, 5, 10, -1],
+                    [3, 5, 10, "All"]
+                ],
+                "pagingType": "simple_numbers",
+                'order'     : [ 5, 'desc' ]
+            });
+            $('#start_date').datepicker({
+                autoclose: true,
+                format: 'yyyy-mm-dd'
+            });
+
+            $('#end_date').datepicker({
+                autoclose: true,
+                format: 'yyyy-mm-dd'
+            });
+        });
+  </script>
+{% endblock javascript %}

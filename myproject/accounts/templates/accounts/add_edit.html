@@ -1,0 +1,128 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+    <!-- left column -->
+    <div class="col-md-8 align-center">
+        <!-- general form elements -->
+        <div class="card card-success">
+            <div class="card-header d-flex justify-content-center">
+                <h2 class="card-title">{{ card_title }}</h2>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <form role="form" method="POST">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        {% for error in form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="firs_name">First Name</label>
+                        <input type="text" class="form-control" autocomplete="off" value="{% if form.first_name.value == None %}{%else%}{{form.first_name.value}}{% endif %}" id="first_name" value="{{ users.first_name }}" name="first_name" placeholder="Enter first name">
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.first_name.errors}}</strong>
+                            </div>
+                        {% endif%}
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" class="form-control" autocomplete="off" id="last_name" value="{% if form.last_name.value == None %}{%else%}{{form.last_name.value}}{% endif %}" value="{{ users.last_name }}" name="last_name" placeholder="Enter last name">
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.last_name.errors}}</strong>
+                            </div>
+                        {% endif%}
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" autocomplete="off" value="{% if form.username.value == None %}{%else%}{{form.username.value}}{% endif %}" value="{{ users.username }}" name="username" placeholder="Enter username">
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.username.errors}}</strong>
+                            </div>
+                        {% endif%}
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" class="form-control" id="email" value="{% if form.email.value == None %}{%else%}{{form.email.value}}{% endif %}" value="{{ users.email }}" name="email" placeholder="Enter email">
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.email.errors}}</strong>
+                            </div>
+                        {% endif%}
+                    </div>
+                    <div class="form-group">
+                        <label for="groups">Groups</label>
+                        <select class="select2 col-sm-12" style="background-color: black;" multiple="multiple" id="groups" name="groups">
+                            {% for x in groups %}
+                                    <option value="{{x.id}}"{% if x.id in curent_groups %}selected{% endif %}>{{x.name}}</option>
+                            {%endfor%}
+                        </select>
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.groups.errors}}</strong>
+                            </div>
+                        {% endif%}
+                    </div>
+                    <div class="form-group">
+                        <label for="user_permissions">Permissions</label>
+                        <select class="select2 col-sm-12" style="background-color: black;" multiple="multiple" id="user_permissions" name="user_permissions">
+                            {% for x in user_permissions %}
+                                    <option value="{{x.id}}"{% if x.id in curent_permissions %}selected{% endif %}>{{x.name}}</option>
+                            {%endfor%}
+                        </select>
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.user_permissions.errors}}</strong>
+                            </div>
+                        {% endif%}
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password (Optional)</label>
+                        <input type="password" class="form-control" id="password" name="password1" placeholder="Password">
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.password1.errors}}</strong>
+                            </div>
+                        {% endif%}
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Retype password</label>
+                        <input type="password" class="form-control" id="password" name="password2" placeholder="Password">
+                        {% if form.errors %}
+                            <div class="text-danger">
+                                <strong>{{ form.password2.errors}}</strong>
+                            </div>
+                        {% endif%}
+                    </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <a type="button" href="{% url 'users_list' %}" class="btn btn-warning">Back</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block javascript %}
+<style>
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: green;
+}
+</style>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2();
+    });
+</script>
+{% endblock javascript %}

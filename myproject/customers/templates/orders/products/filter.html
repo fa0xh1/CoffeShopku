@@ -1,0 +1,35 @@
+<div class="card">
+        <div class="card-header with-border">
+            <h3 class="card-title">Filter Product</h3>
+        </div>
+        <div class="card-body">
+            <div class="col-md-12">
+                <form class="form-inline">
+                    <div class="input-group col-md-12">
+                        <input class="form-control" autocomplete="off" name="search" type="search" placeholder="Search"
+                            aria-label="Search">
+                        <div class="input-group-append float-right">
+                            <button class="btn btn-navbar" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br>
+            <div class="col-md-12">
+                <form class="form-inline">
+                    <div class="input-group col-md-12">
+                        <select onchange="this.form.submit()" name="categories" id="categories" required
+                            class="form-control ">
+                            <option value="">Categories</option>
+                            {% for row in list_categories %}
+                            <option value="{{row.id}}" {%if  row.id == request.GET.categories|add:0 %} selected {% endif%}>
+                                {{row.name}}</option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
